@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Address } from 'src/app/models/address';
 import { Country } from 'src/app/models/country';
+import { Customer } from 'src/app/models/customer';
+import { Order } from 'src/app/models/order';
+import { OrderItem } from 'src/app/models/order-item';
+import { Purchase } from 'src/app/models/purchase';
 import { State } from 'src/app/models/state';
 import { CartService } from 'src/app/services/cart.service';
+import { CheckoutService } from 'src/app/services/checkout.service';
 import { Luv2ShopFormService } from 'src/app/services/luv2-shop-form.service';
 import { Luv2ShopValidators } from 'src/app/validators/luv2-shop-validators';
 
@@ -33,7 +40,9 @@ export class CheckoutComponent implements OnInit {
 
 	constructor(private formBuilder: FormBuilder,
 							private luv2ShopFormService: Luv2ShopFormService,
-							private cartService: CartService
+							private cartService: CartService,
+							private checkoutService: CheckoutService,
+							private router: Router
 	) { }
 
 	ngOnInit() {
@@ -176,8 +185,66 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-    console.log("Form submitted successfully!");
+		// set up order
+		const order = new Order(this.totalPrice, this.totalQuantity);
+
+		// get cart items
+		const cartItems = this.cartService.cartItems;
+
+		// create orderItems from cartItems
+		const orderItems: OrderItem[] = Array.from(cartItems).map(cartItem => new OrderItem(cartItem[1]));
+
+		// populate purchase - customer
+		const customer: Customer = { ...this.checkoutFormGroup.controls['customer'].value };
+
+		// populate purchase - shipping address -> extract name for state and country
+		const shippingAddressValue: AddressFormValue = this.checkoutFormGroup.controls['shippingAddress'].value;
+		const shippingAddress: Address = new Address(
+			shippingAddressValue.street,
+			shippingAddressValue.city,
+			shippingAddressValue.state.name,
+			shippingAddressValue.country.name,
+			shippingAddressValue.zipCode
+		);
+
+		// populate purchase - billing address -> extract name for state and country
+		const billingAddressValue: AddressFormValue = this.checkoutFormGroup.controls['billingAddress'].value;
+		const billingAddress: Address = new Address(
+			billingAddressValue.street,
+			billingAddressValue.city,
+			billingAddressValue.state.name,
+			billingAddressValue.country.name,
+			billingAddressValue.zipCode
+		);
+
+		// set up and populate purchase
+		const purchase: Purchase = new Purchase(customer, shippingAddress, billingAddress, order, orderItems);
+
+		// call REST API via the CheckoutService
+		this.checkoutService.placeOrder(purchase).subscribe({
+			next: (response) => {
+				alert(`Your order has been received.\nOrder tracking number: ${response.orderTrackingNumber}`);
+
+				this.resetCart();
+			},
+			error: (err) => {
+				alert(`There was an error: ${err.message}`);
+			}
+		});
   }
+
+	resetCart() {
+		// reset cart data
+		this.cartService.cartItems = new Map();
+		this.cartService.totalPrice.next(0.00);
+		this.cartService.totalQuantity.next(0);
+
+		// reset the form
+		this.checkoutFormGroup.reset();
+
+		// navigate back to the products page
+		this.router.navigateByUrl("/products");
+	}
 
 
 	handleMonthsAndYears() {
@@ -238,4 +305,12 @@ export class CheckoutComponent implements OnInit {
 		this.cartService.totalQuantity.subscribe(
 			data => this.totalQuantity = data);
 	}
+}
+
+interface AddressFormValue {
+  street: string;
+  city: string;
+  state: { id: number; name: string };
+  country: { id: number; code: string; name: string };
+  zipCode: string;
 }
