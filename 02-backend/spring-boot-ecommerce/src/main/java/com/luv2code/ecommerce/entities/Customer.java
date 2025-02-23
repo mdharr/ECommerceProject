@@ -15,6 +15,12 @@ public class Customer {
     @Column(name="id")
     private Long id;
 
+    @Column(name="username")
+    private String username;
+
+    @Column(name="password")
+    private String password;
+
     @Column(name="first_name")
     private String firstName;
 
@@ -41,12 +47,14 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(Long id, String firstName, String lastName, String email, Set<Order> orders) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+    public Customer(Set<Order> orders, String email, String lastName, String firstName, String password, String username, Long id) {
         this.orders = orders;
+        this.email = email;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.password = password;
+        this.username = username;
+        this.id = id;
     }
 
     public Long getId() {
@@ -55,6 +63,22 @@ public class Customer {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {

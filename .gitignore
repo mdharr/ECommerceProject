@@ -33,6 +33,7 @@ bin/
 
 # Environment
 .env
+.env.*
 
 # Servers
 Servers/
