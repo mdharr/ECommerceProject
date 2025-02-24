@@ -1,0 +1,107 @@
+<div class="main-content page-m">
+	<div class="section-content section-content-p30">
+		<div class="container-fluid">
+			<form [formGroup]="registerFormGroup" (ngSubmit)="onSubmit()">
+				<!-- New User -->
+				<div formGroupName="user" class="form-area">
+					<h3>Register</h3>
+
+					<div class="row">
+						<div class="col-md-2"><label>Username</label></div>
+						<div class="col-md-9">
+							<div class="input-space">
+								<input formControlName="username" type="text" />
+
+								<div *ngIf="username?.invalid && (username?.dirty || username?.touched)" class="alert alert-danger mt-1">
+									<div *ngIf="usernameErrors?.['required'] || usernameErrors?.['notOnlyWhitespace']">
+										Username is required
+									</div>
+									<div *ngIf="usernameErrors?.['minlength']">
+										Username must be at least 2 characters long
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-2"><label>Password</label></div>
+						<div class="col-md-9">
+							<div class="input-space">
+								<input formControlName="password" type="text" />
+
+								<div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="alert alert-danger mt-1">
+									<div *ngIf="passwordErrors?.['required'] || passwordErrors?.['notOnlyWhitespace']">
+										Password is required
+									</div>
+									<div *ngIf="passwordErrors?.['minlength']">
+										Password must be at least 8 characters long
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-2"><label>First Name</label></div>
+						<div class="col-md-9">
+							<div class="input-space">
+								<input formControlName="firstName" type="text" />
+
+								<div *ngIf="firstName?.invalid && (firstName?.dirty || firstName?.touched)" class="alert alert-danger mt-1">
+									<div *ngIf="firstNameErrors?.['required'] || firstNameErrors?.['notOnlyWhitespace']">
+										First Name is required
+									</div>
+									<div *ngIf="firstNameErrors?.['minlength']">
+										First Name must be at least 2 characters long
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-2"><label>Last Name</label></div>
+						<div class="col-md-9">
+							<div class="input-space">
+								<input formControlName="lastName" type="text" />
+
+								<div *ngIf="lastName?.invalid && (lastName?.dirty || lastName?.touched)" class="alert alert-danger mt-1">
+									<div *ngIf="lastNameErrors?.['required'] || lastNameErrors?.['notOnlyWhitespace']">
+										Last Name is required
+									</div>
+									<div *ngIf="lastNameErrors?.['minlength']">
+										Last Name must be at least 2 characters long
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-2"><label>Email</label></div>
+						<div class="col-md-9">
+							<div class="input-space">
+								<input formControlName="email" type="text" />
+
+								<div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="alert alert-danger mt-1">
+									<div *ngIf="emailErrors?.['required']">
+										Email is required
+									</div>
+									<div *ngIf="emailErrors?.['pattern']">
+										Email must be a valid email address format
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- submit button -->
+				<div class="text-center">
+				<button type="submit" class="btn btn-info">Go</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

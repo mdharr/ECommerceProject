@@ -24,14 +24,27 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        // Apply CORS configuration globally
+//        http.cors(cors -> cors.configurationSource(corsConfigurationSource())) // Make sure cors is applied here
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/api/v1/auth/**", "/api/products/**", "/api/product-category/**", "/api/countries/**", "/api/states/**").permitAll() // Permit all for auth routes
+//                        .anyRequest().authenticated() // All other requests need authentication
+//                )
+//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//
+//        return http.build();
+//    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Configure CORS directly and authorize requests
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Direct cors configuration
+            .csrf(csrf -> csrf.disable())  // <--- disable CSRF for stateless REST
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("api/v1/auth/**").permitAll() // Permit all for auth routes
-                    .anyRequest().authenticated() // All other requests need authentication
+                    .requestMatchers("/api/v1/auth/**", "/api/products/**", "/api/product-category/**", "/api/countries/**", "/api/states/**").permitAll()
+                    .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -51,7 +64,7 @@ public class SecurityConfig {
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

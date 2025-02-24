@@ -1,6 +1,6 @@
 package com.luv2code.ecommerce.security;
 
-import com.luv2code.ecommerce.dao.CustomerRepository;
+import com.luv2code.ecommerce.repositories.CustomerRepository;
 import com.luv2code.ecommerce.entities.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;

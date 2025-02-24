@@ -48,6 +48,7 @@ export class ProductService {
 			.get<GetResponseProductCategory>(this.categoryUrl)
 			.pipe(map((response) => response._embedded.productCategory));
 	}
+
 }
 
 interface GetResponseProducts {

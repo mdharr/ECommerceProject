@@ -1,6 +1,6 @@
 package com.luv2code.ecommerce.services;
 
-import com.luv2code.ecommerce.dao.CustomerRepository;
+import com.luv2code.ecommerce.repositories.CustomerRepository;
 import com.luv2code.ecommerce.dtos.Purchase;
 import com.luv2code.ecommerce.dtos.PurchaseResponse;
 import com.luv2code.ecommerce.entities.Customer;

@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, Router } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
@@ -16,11 +16,16 @@ import { CartDetailsComponent } from './components/cart-details/cart-details.com
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { LoginComponent } from './components/login/login.component';
 import { LoginStatusComponent } from './components/login-status/login-status.component';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { authGuardFn } from './guards/auth.guard';
+import { RegisterComponent } from './components/register/register.component';
+import { MembersPageComponent } from './components/members-page/members-page.component';
 
 const routes: Routes = [
 	// {path: 'login/callback', component: OktaCallbackComponent},
 	{path: 'login', component: LoginComponent},
-  {path: 'checkout', component: CheckoutComponent},
+  {path: 'member', component: MembersPageComponent, canActivate: [authGuardFn]},
+  {path: 'checkout', component: CheckoutComponent, canActivate: [authGuardFn]},
   {path: 'cart-details', component: CartDetailsComponent},
   {path: 'search/:keyword', component: ProductListComponent},
   {path: 'category/:id', component: ProductListComponent},
@@ -42,7 +47,9 @@ const routes: Routes = [
     CartDetailsComponent,
     CheckoutComponent,
     LoginComponent,
-    LoginStatusComponent
+    LoginStatusComponent,
+    RegisterComponent,
+    MembersPageComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -51,7 +58,10 @@ const routes: Routes = [
     NgbModule,
 		ReactiveFormsModule
   ],
-  providers: [ProductService],
+  providers: [
+		ProductService,
+		{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+	],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

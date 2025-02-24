@@ -16,7 +16,15 @@ export class SearchComponent implements OnInit {
 
   doSearch(value: string) {
     console.log(`value=${value}`);
-    this.router.navigateByUrl(`/search/${value}`);
+		const sanitized = this.sanitizeQuery(value);
+		console.log(sanitized);
+		if (sanitized.length > 0) {
+			this.router.navigateByUrl(`/search/${sanitized}`);
+		}
   }
+
+	sanitizeQuery(query: string) {
+		return query.trim();
+	}
 
 }
