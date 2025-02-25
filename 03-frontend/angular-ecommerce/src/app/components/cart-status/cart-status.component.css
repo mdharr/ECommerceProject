@@ -1,0 +1,67 @@
+.cart-link {
+	display: flex;
+	gap: 5px;
+	text-decoration: none;
+	padding: 5px;
+	transition: all 0.3s ease;
+}
+
+.cart-link:hover {
+	cursor: pointer;
+	transform: scale(1.1);
+}
+
+#nav-cart-count-container {
+	position: relative;
+	padding-bottom: 1px;
+}
+
+.nav-sprite {
+	background-image: url(https://m.media-amazon.com/images/G/01/gno/sprites/nav-sprite-global-1x-reorg-privacy._CB541706272_.png);
+	background-position: 0 1000px;
+	background-repeat: repeat-x;
+}
+
+.nav-cart-icon {
+	display: block;
+	background-position: -10px -340px;
+	width: 38px;
+	height: 26px;
+	cursor: pointer;
+}
+
+#nav-cart-count {
+	font-family:Arial, Helvetica, sans-serif;
+	position: absolute;
+	left: 12px;
+	right: auto;
+	top: -7px;
+	font-size: 13px;
+	color: #ffa736;
+	font-weight: 700;
+	width: 20px;
+	text-align: center;
+	filter: drop-shadow(0px 0px 1px darkslategray);
+	-webkit-box-pack: center;
+	-moz-box-pack: center;
+	-ms-flex-pack: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+.nav-line-1 {
+	font-size: 12px;
+	line-height: 14px;
+	height: 14px;
+	font-weight: 400;
+	margin-top: 9px;
+}
+
+.nav-line-2 {
+	font-size: 14px;
+	line-height: 15px;
+	font-weight: 700;
+	padding-bottom: 5px;
+	color: #fff;
+	filter: drop-shadow(0px 0px 1px darkslategray);
+}

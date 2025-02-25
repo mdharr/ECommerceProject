@@ -9,7 +9,7 @@ import { CartService } from 'src/app/services/cart.service';
 })
 export class CartDetailsComponent implements OnInit {
 
-	cartItems: Map<number, CartItem> = new Map<number, CartItem>();
+	cartItems: Map<string, CartItem> = new Map<string, CartItem>();
 	totalPrice: number = 0;
 	totalQuantity: number = 0;
 

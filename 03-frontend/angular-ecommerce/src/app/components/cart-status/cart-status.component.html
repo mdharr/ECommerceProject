@@ -1,8 +1,19 @@
-<div class="cart-area d-n">
+<!-- <div class="cart-area d-n">
 	<a routerLink="/cart-details">
 		<div class="total">{{ totalPrice.toFixed(2) | currency:'USD' }}
 			<span>{{ totalQuantity }}</span>
 		</div>
 		<i class="fa fa-shopping-cart" aria-hidden="true"></i>
 	</a>
-</div>
+</div> -->
+
+<a class="cart-link" routerLink="/cart-details">
+	<div id="nav-cart-count-container">
+		<span id="nav-cart-count">{{ totalQuantity > 99 ? "99+" : totalQuantity }}</span>
+		<span class="nav-cart-icon nav-sprite"></span>
+	</div>
+	<div style="text-decoration: none;">
+		<span class="nav-line-1"></span>
+		<span class="nav-line-2">Cart</span>
+	</div>
+</a>

@@ -16,6 +16,11 @@
   background:#205b8d
 }
 
+.security-btn:hover {
+	background: #05143f;
+	border-color: #05143f;
+}
+
 /*
 	Copy from styles.css -> .form-header
 	Rename as .login-status-header
@@ -29,6 +34,8 @@
   display:flex;
 	align-items: center;
 	gap: 15px;
+	font-size: small;
+	font-weight: 600;
 }
 
 /*

@@ -23,7 +23,9 @@ export class AuthService {
     if (token) {
       const decoded = this.decodeToken(token);
       const user: LoggedInUser = {
-        username: decoded.sub
+        username: decoded.sub,
+				id: decoded.id,
+				firstName: decoded.firstName
       };
       this.currentUserSubject.next(user);
     }

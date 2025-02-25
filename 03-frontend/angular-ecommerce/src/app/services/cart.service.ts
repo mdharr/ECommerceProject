@@ -7,21 +7,42 @@ import { BehaviorSubject, Subject } from 'rxjs';
 })
 export class CartService {
 
-	cartItems: Map<number, CartItem> = new Map<number, CartItem>();
+	cartItems: Map<string, CartItem> = new Map<string, CartItem>();
 
 	totalPrice: Subject<number> = new BehaviorSubject<number>(0.00);
 	totalQuantity: Subject<number> = new BehaviorSubject<number>(0);
 
-  constructor() { }
+	// storage: Storage = sessionStorage;
+	storage: Storage = localStorage;
+
+  constructor() {
+
+		// read data from storage
+		let data = JSON.parse(this.storage.getItem('cartItems')!);
+
+		if (data != null) {
+			this.cartItems = new Map(data);
+		}
+		else {
+			this.cartItems = new Map();
+		}
+		// compute totals based on the data that is read from storage
+		this.computeCartTotals();
+	}
+
+	persistCartItems() {
+		this.storage.setItem('cartItems', JSON.stringify(Array.from(this.cartItems)));
+	}
 
 	addToCart(cartItem: CartItem) {
+		const cartItemId = String(cartItem.id);
 		// check if we already have the item in our cart
-		if (this.cartItems.has(cartItem.id)) {
-			const item = this.cartItems.get(cartItem.id);
+		if (this.cartItems.has(cartItemId)) {
+			const item = this.cartItems.get(cartItemId);
 			if (!item) return;
-			this.cartItems.set(cartItem.id, { ...item, quantity: item.quantity + 1 } as CartItem);
+			this.cartItems.set(cartItemId, { ...item, quantity: item.quantity + 1 } as CartItem);
 		} else {
-			this.cartItems.set(cartItem.id, { ...cartItem, quantity: 1 } as CartItem);
+			this.cartItems.set(cartItemId, { ...cartItem, quantity: 1 } as CartItem);
 		}
 
 		// compute cart total price and total quantity
@@ -42,6 +63,9 @@ export class CartService {
 
 		// log cart data just for debugging purposes
 		this.logCartData(totalPriceValue, totalQuantityValue);
+
+		// persist cart data
+		this.persistCartItems();
 	}
 
 	logCartData(price: number, quantity: number) {
@@ -66,9 +90,11 @@ export class CartService {
 	}
 
 	remove(cartItem: CartItem) {
-		if (this.cartItems.has(cartItem.id)) {
-			this.cartItems.delete(cartItem.id);
+		const cartItemId = String(cartItem.id);
+		if (this.cartItems.has(cartItemId)) {
+			this.cartItems.delete(cartItemId);
 			this.computeCartTotals();
 		}
 	}
+
 }
