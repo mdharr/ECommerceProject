@@ -20,11 +20,12 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { authGuardFn } from './guards/auth.guard';
 import { RegisterComponent } from './components/register/register.component';
 import { MembersPageComponent } from './components/members-page/members-page.component';
+import { noAuthGuardFn } from './guards/no-auth.guard';
 
 const routes: Routes = [
-	// {path: 'login/callback', component: OktaCallbackComponent},
-	{path: 'login', component: LoginComponent},
-  {path: 'member', component: MembersPageComponent, canActivate: [authGuardFn]},
+	{path: 'register', component: RegisterComponent, canActivate: [noAuthGuardFn]},
+	{path: 'login', component: LoginComponent, canActivate: [noAuthGuardFn]},
+  {path: 'members', component: MembersPageComponent, canActivate: [authGuardFn]},
   {path: 'checkout', component: CheckoutComponent, canActivate: [authGuardFn]},
   {path: 'cart-details', component: CartDetailsComponent},
   {path: 'search/:keyword', component: ProductListComponent},

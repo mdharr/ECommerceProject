@@ -14,7 +14,20 @@ export class AuthService {
 	private currentUserSubject = new BehaviorSubject<LoggedInUser | null>(null);
 	public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+		this.initializeUser();
+	}
+
+	private initializeUser() {
+    const token = this.getToken();
+    if (token) {
+      const decoded = this.decodeToken(token);
+      const user: LoggedInUser = {
+        username: decoded.sub
+      };
+      this.currentUserSubject.next(user);
+    }
+  }
 
 	register(user: any): Observable<any> {
 		return this.http.post(`${this.baseUrl}/register`, user);
@@ -29,6 +42,8 @@ export class AuthService {
 					const decoded = this.decodeToken(response.token);
 					const user: LoggedInUser = {
 						username: decoded.sub,
+						id: decoded.id,
+						firstName: decoded.firstName
 					};
 					this.currentUserSubject.next(user);
 				}
@@ -38,7 +53,7 @@ export class AuthService {
 
 	logout(): void {
 		localStorage.removeItem(this.tokenKey);
-
+		localStorage.removeItem('authUser');
 		// Set current user to null in the BehaviorSubject
 		this.currentUserSubject.next(null);
 	}

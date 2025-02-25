@@ -1,13 +1,13 @@
 <div class="login-status-header">
   <ng-container *ngIf="(currentUser$ | async) as user; else loggedOut">
-    Hello, {{ user.username }}
+    Hello, {{ user.firstName }}
     <button (click)="onLogout()" class="security-btn ml-1">Logout</button>
+		<button routerLink="/members" class="security-btn ml-1">Member</button>
   </ng-container>
 
   <ng-template #loggedOut>
     <button routerLink="/login" class="security-btn ml-1">Log in</button>
   </ng-template>
 
-	<button routerLink="/member" class="security-btn ml-1">Member</button>
 </div>
 

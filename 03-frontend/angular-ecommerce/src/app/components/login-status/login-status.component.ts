@@ -27,4 +27,6 @@ export class LoginStatusComponent implements OnInit {
 		this.authService.logout();
 		this.router.navigateByUrl('/products');
 	}
+
+
 }

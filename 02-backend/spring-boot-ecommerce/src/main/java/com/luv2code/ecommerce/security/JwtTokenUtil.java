@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtTokenUtil {
@@ -25,38 +27,64 @@ public class JwtTokenUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String username) {
+    // Generate JWT token with user details
+    public String generateToken(String username, Long userId, String firstName) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
         return Jwts.builder()
                 .setSubject(username)
+                .claim("id", userId)
+                .claim("firstName", firstName)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
+    // Extract username from JWT
     public String getUsernameFromJWT(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.getSubject();
+        Claims claims = parseClaims(token);
+        return claims != null ? claims.getSubject() : null;
     }
 
+    // Validate the JWT token (check if expired)
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token);
-
-            Date expiration = claimsJws.getBody().getExpiration();
-            return !expiration.before(new Date());
+            Claims claims = parseClaims(token);
+            if (claims != null) {
+                Date expirationDate = claims.getExpiration();
+                return expirationDate != null && !expirationDate.before(new Date());
+            }
         } catch (JwtException ex) {
             logger.error("JWT validation failed: {}", ex.getMessage());
         }
         return false;
+    }
+
+    // Decode the JWT and extract user details as a map
+    public Map<String, Object> decodeToken(String token) {
+        Claims claims = parseClaims(token);
+        if (claims != null) {
+            Map<String, Object> userDetails = new HashMap<>();
+            userDetails.put("username", claims.getSubject());
+            userDetails.put("id", claims.get("id"));
+            userDetails.put("firstName", claims.get("firstName"));
+            return userDetails;
+        }
+        return null;
+    }
+
+    // Parse the JWT and return the claims
+    private Claims parseClaims(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (JwtException ex) {
+            logger.error("Error parsing JWT: {}", ex.getMessage());
+        }
+        return null;
     }
 }

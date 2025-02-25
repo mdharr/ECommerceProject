@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -37,7 +38,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             token = header.substring(7);
             try {
-                username = tokenUtil.getUsernameFromJWT(token);
+                // Extract user details from the token (username, id, firstName)
+                Map<String, Object> userDetails = tokenUtil.decodeToken(token);
+                if (userDetails != null) {
+                    username = (String) userDetails.get("username");
+                }
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
             }
@@ -45,7 +50,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            // Validate the token
             if (tokenUtil.validateToken(token)) {
+                // If valid, create an authentication token with the user details
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -59,4 +67,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
 }

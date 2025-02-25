@@ -13,7 +13,6 @@ import { Luv2ShopValidators } from 'src/app/validators/luv2-shop-validators';
 export class LoginComponent implements OnInit {
 
 	loginFormGroup!: FormGroup;
-
 	loginError: string | null = null;
 
 	emailRegex: RegExp = /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
@@ -23,6 +22,7 @@ export class LoginComponent implements OnInit {
 							private authService: AuthService) { }
 
 	ngOnInit() {
+		console.log("Initializing the form...");
 
 		this.loginFormGroup = this.formBuilder.group({
 			user: this.formBuilder.group({
@@ -30,6 +30,9 @@ export class LoginComponent implements OnInit {
 				password: new FormControl('', [Validators.required, Validators.minLength(8), Luv2ShopValidators.notOnlyWhiteSpace])
 			})
 		});
+
+		this.resetForm();
+		console.log(this.loginFormGroup.value);
 	}
 
 	// user getters
@@ -65,11 +68,14 @@ export class LoginComponent implements OnInit {
 	}
 
 	resetForm() {
-
 		// reset the form
-		this.loginFormGroup.reset();
-		// navigate back to the products page
-		this.router.navigateByUrl("/products");
+		console.log('reset')
+		this.loginFormGroup.reset({
+			user: {
+				username: '',  // Clear the username field
+				password: ''   // Clear the password field
+			}
+		});
 	}
 
 }

@@ -24,19 +24,6 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        // Apply CORS configuration globally
-//        http.cors(cors -> cors.configurationSource(corsConfigurationSource())) // Make sure cors is applied here
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/api/v1/auth/**", "/api/products/**", "/api/product-category/**", "/api/countries/**", "/api/states/**").permitAll() // Permit all for auth routes
-//                        .anyRequest().authenticated() // All other requests need authentication
-//                )
-//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//
-//        return http.build();
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

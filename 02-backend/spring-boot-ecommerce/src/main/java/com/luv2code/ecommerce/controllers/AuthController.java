@@ -20,7 +20,7 @@ import java.util.Map;
 public class AuthController {
 
     @Autowired
-    private CustomerService userService;
+    private CustomerService customerService;
 
     @Autowired
     private JwtTokenUtil tokenUtil;
@@ -34,7 +34,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Customer customer) {
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        Customer registeredUser = userService.register(customer);
+        Customer registeredUser = customerService.register(customer);
         return ResponseEntity.ok(registeredUser);
     }
 
@@ -43,12 +43,12 @@ public class AuthController {
 //        if (!captchaService.verifyCaptcha(loginRequest.getCaptcha())) {
 //            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Captcha validation failed.");
 //        }
-        Customer customer = userService.findByUsername(loginRequest.getUsername())
+        Customer customer = customerService.findByUsername(loginRequest.getUsername())
                 .orElse(null);
         if(customer == null || !passwordEncoder.matches(loginRequest.getPassword(), customer.getPassword())) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
-        String token = tokenUtil.generateToken(customer.getUsername());
+        String token = tokenUtil.generateToken(customer.getUsername(), customer.getId(), customer.getFirstName());
 
         // Return a JSON object with a "token" property
         Map<String, String> responseBody = new HashMap<>();

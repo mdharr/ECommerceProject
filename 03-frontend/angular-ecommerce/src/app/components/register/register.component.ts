@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Customer } from 'src/app/models/customer';
+import { AuthService } from 'src/app/services/auth.service';
 import { Luv2ShopValidators } from 'src/app/validators/luv2-shop-validators';
 
 @Component({
@@ -10,12 +11,15 @@ import { Luv2ShopValidators } from 'src/app/validators/luv2-shop-validators';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+
 	registerFormGroup!: FormGroup;
+	registerError: string | null = null;
 
 	emailRegex: RegExp = /^(?!.*\.\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
 
 	constructor(private formBuilder: FormBuilder,
-							private router: Router
+							private router: Router,
+							private authService: AuthService
 	) { }
 
 	ngOnInit() {
@@ -52,7 +56,20 @@ export class RegisterComponent implements OnInit {
 			return;
 		}
 
-		const customer: Customer = { ...this.registerFormGroup.controls['user'].value };
+		// Extract credentials
+		const { username, password, firstName, lastName, email } = this.registerFormGroup.controls['user'].value || {};
+
+		// Call the AuthService register method
+		this.authService.register({ username, password, firstName, lastName, email }).subscribe({
+			next: (response) => {
+				console.log("Login successful:", response);
+				this.router.navigateByUrl("/products");
+			},
+			error: (err) => {
+				console.error("Register failed:", err);
+				this.registerError = "Something went wrong";
+			}
+		});
 	}
 
 	resetForm() {
