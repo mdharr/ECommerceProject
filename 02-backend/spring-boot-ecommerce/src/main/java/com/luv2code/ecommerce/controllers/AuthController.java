@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@CrossOrigin("http://localhost:4200")
+//@CrossOrigin("http://localhost:4200")
 @RestController
 @RequestMapping("api/v1/auth")
 public class AuthController {
@@ -33,9 +33,18 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Customer customer) {
+        // Hash the password and save the customer to the database
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         Customer registeredUser = customerService.register(customer);
-        return ResponseEntity.ok(registeredUser);
+
+        // Generate a JWT for the registered user
+        String token = tokenUtil.generateToken(registeredUser.getUsername(), registeredUser.getId(), registeredUser.getFirstName());
+
+        // Return the token as part of the response body
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("token", token);
+//        return ResponseEntity.ok(registeredUser);
+        return ResponseEntity.ok(responseBody);
     }
 
     @PostMapping("/login")

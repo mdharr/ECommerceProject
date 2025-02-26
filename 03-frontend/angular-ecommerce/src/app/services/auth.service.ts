@@ -31,8 +31,30 @@ export class AuthService {
     }
   }
 
+	// register(user: any): Observable<any> {
+	// 	return this.http.post(`${this.baseUrl}/register`, user);
+	// }
+
 	register(user: any): Observable<any> {
-		return this.http.post(`${this.baseUrl}/register`, user);
+		return this.http.post(`${this.baseUrl}/register`, user).pipe(
+			tap((response: any) => {
+				if (response && response.token) {
+					// Store the token in localStorage
+					this.setToken(response.token);
+
+					// Decode the token and create the user object
+					const decoded = this.decodeToken(response.token);
+					const user: LoggedInUser = {
+						username: decoded.sub,
+						id: decoded.id,
+						firstName: decoded.firstName,
+					};
+
+					// Set the current user in the BehaviorSubject
+					this.currentUserSubject.next(user);
+				}
+			})
+		);
 	}
 
 	login(credentials: { username: string, password: string }): Observable<any> {

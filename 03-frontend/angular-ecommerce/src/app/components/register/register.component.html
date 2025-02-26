@@ -10,7 +10,7 @@
 						<div class="col-md-2"><label>Username</label></div>
 						<div class="col-md-9">
 							<div class="input-space">
-								<input formControlName="username" type="text" />
+								<input formControlName="username" type="text" autocomplete="new-username" />
 
 								<div *ngIf="username?.invalid && (username?.dirty || username?.touched)" class="alert alert-danger mt-1">
 									<div *ngIf="usernameErrors?.['required'] || usernameErrors?.['notOnlyWhitespace']">
@@ -28,7 +28,7 @@
 						<div class="col-md-2"><label>Password</label></div>
 						<div class="col-md-9">
 							<div class="input-space">
-								<input formControlName="password" type="text" />
+								<input formControlName="password" type="password" autocomplete="new-password" />
 
 								<div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="alert alert-danger mt-1">
 									<div *ngIf="passwordErrors?.['required'] || passwordErrors?.['notOnlyWhitespace']">
@@ -46,7 +46,7 @@
 						<div class="col-md-2"><label>First Name</label></div>
 						<div class="col-md-9">
 							<div class="input-space">
-								<input formControlName="firstName" type="text" />
+								<input formControlName="firstName" type="text" autocomplete="new-firstName" />
 
 								<div *ngIf="firstName?.invalid && (firstName?.dirty || firstName?.touched)" class="alert alert-danger mt-1">
 									<div *ngIf="firstNameErrors?.['required'] || firstNameErrors?.['notOnlyWhitespace']">
@@ -64,7 +64,7 @@
 						<div class="col-md-2"><label>Last Name</label></div>
 						<div class="col-md-9">
 							<div class="input-space">
-								<input formControlName="lastName" type="text" />
+								<input formControlName="lastName" type="text" autocomplete="new-lastName" />
 
 								<div *ngIf="lastName?.invalid && (lastName?.dirty || lastName?.touched)" class="alert alert-danger mt-1">
 									<div *ngIf="lastNameErrors?.['required'] || lastNameErrors?.['notOnlyWhitespace']">
@@ -82,7 +82,7 @@
 						<div class="col-md-2"><label>Email</label></div>
 						<div class="col-md-9">
 							<div class="input-space">
-								<input formControlName="email" type="text" />
+								<input formControlName="email" type="text" autocomplete="new-email" />
 
 								<div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="alert alert-danger mt-1">
 									<div *ngIf="emailErrors?.['required']">

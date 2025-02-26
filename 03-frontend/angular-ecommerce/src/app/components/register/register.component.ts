@@ -62,7 +62,7 @@ export class RegisterComponent implements OnInit {
 		// Call the AuthService register method
 		this.authService.register({ username, password, firstName, lastName, email }).subscribe({
 			next: (response) => {
-				console.log("Login successful:", response);
+				console.log("Registration successful:", response);
 				this.router.navigateByUrl("/products");
 			},
 			error: (err) => {
@@ -73,7 +73,6 @@ export class RegisterComponent implements OnInit {
 	}
 
 	resetForm() {
-
 		// reset the form
 		this.registerFormGroup.reset();
 

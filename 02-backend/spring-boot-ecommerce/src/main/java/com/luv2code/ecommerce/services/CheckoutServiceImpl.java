@@ -9,6 +9,7 @@ import com.luv2code.ecommerce.entities.OrderItem;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,6 +42,17 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         // populate customer with order
         Customer customer = purchase.getCustomer();
+
+        // check if this is an existing customer ...
+        String email = customer.getEmail();
+
+        Optional<Customer> optionalCustomer = customerRepository.findByEmail(email);
+
+        if (optionalCustomer.isPresent()) {
+            // we found a customer using this email from a previous order
+            customer = optionalCustomer.get();
+        }
+
         customer.add(order);
 
         // save to the database
