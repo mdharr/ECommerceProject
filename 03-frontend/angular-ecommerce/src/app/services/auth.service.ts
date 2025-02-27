@@ -25,7 +25,8 @@ export class AuthService {
       const user: LoggedInUser = {
         username: decoded.sub,
 				id: decoded.id,
-				firstName: decoded.firstName
+				firstName: decoded.firstName,
+				email: decoded.email,
       };
       this.currentUserSubject.next(user);
     }
@@ -48,6 +49,7 @@ export class AuthService {
 						username: decoded.sub,
 						id: decoded.id,
 						firstName: decoded.firstName,
+						email: decoded.email,
 					};
 
 					// Set the current user in the BehaviorSubject
@@ -67,7 +69,8 @@ export class AuthService {
 					const user: LoggedInUser = {
 						username: decoded.sub,
 						id: decoded.id,
-						firstName: decoded.firstName
+						firstName: decoded.firstName,
+						email: decoded.email,
 					};
 					this.currentUserSubject.next(user);
 				}

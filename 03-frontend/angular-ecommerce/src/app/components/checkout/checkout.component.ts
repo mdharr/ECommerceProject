@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { Address } from 'src/app/models/address';
 import { Country } from 'src/app/models/country';
 import { Customer } from 'src/app/models/customer';
+import { LoggedInUser } from 'src/app/models/logged-in-user';
 import { Order } from 'src/app/models/order';
 import { OrderItem } from 'src/app/models/order-item';
 import { Purchase } from 'src/app/models/purchase';
 import { State } from 'src/app/models/state';
+import { AuthService } from 'src/app/services/auth.service';
 import { CartService } from 'src/app/services/cart.service';
 import { CheckoutService } from 'src/app/services/checkout.service';
 import { Luv2ShopFormService } from 'src/app/services/luv2-shop-form.service';
@@ -21,6 +24,11 @@ import { Luv2ShopValidators } from 'src/app/validators/luv2-shop-validators';
 export class CheckoutComponent implements OnInit {
 
 	checkoutFormGroup!: FormGroup;
+
+	currentUser$: Observable<LoggedInUser | null>;
+	userEmail: string = '';
+
+	storage: Storage = sessionStorage;
 
 	totalPrice: number = 0.00;
 	totalQuantity: number = 0;
@@ -42,10 +50,21 @@ export class CheckoutComponent implements OnInit {
 							private luv2ShopFormService: Luv2ShopFormService,
 							private cartService: CartService,
 							private checkoutService: CheckoutService,
-							private router: Router
-	) { }
+							private router: Router,
+							private authService: AuthService
+	) {
+		this.currentUser$ = this.authService.currentUser$;
+	}
 
 	ngOnInit() {
+
+		this.currentUser$.subscribe(user => {
+      console.log("Current user changed:", user);
+			if (!this.storage.getItem('userEmail') || this.storage.getItem('userEmail') !== user?.email) {
+				this.storage.setItem('userEmail', user?.email!);
+			}
+			this.userEmail = this.storage.getItem('userEmail')!;
+    });
 
 		this.reviewCartDetails();
 
@@ -53,7 +72,7 @@ export class CheckoutComponent implements OnInit {
 			customer: this.formBuilder.group({
 				firstName: new FormControl('', [Validators.required, Validators.minLength(2), Luv2ShopValidators.notOnlyWhiteSpace]),
 				lastName: new FormControl('', [Validators.required, Validators.minLength(2), Luv2ShopValidators.notOnlyWhiteSpace]),
-				email: new FormControl('', [Validators.required, Validators.pattern(this.emailRegex)])
+				email: new FormControl({value: this.userEmail, disabled: true}, [Validators.required, Validators.pattern(this.emailRegex)])
 			}),
 			shippingAddress: this.formBuilder.group({
 				street: new FormControl('', [Validators.required, Validators.minLength(2), Luv2ShopValidators.notOnlyWhiteSpace]),
@@ -105,7 +124,6 @@ export class CheckoutComponent implements OnInit {
 			}
 		)
 
-		// populate states
 	}
 
 	copyShippingAddressToBillingAddress(event: Event) {

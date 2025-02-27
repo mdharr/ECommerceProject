@@ -1,8 +1,10 @@
 package com.luv2code.ecommerce.config;
 
 import com.luv2code.ecommerce.security.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,10 +15,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 public class SecurityConfig {
+
+    @Value("${allowed.origins}")
+    private String[] allowedOrigins;
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -30,8 +36,16 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())  // <--- disable CSRF for stateless REST
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/v1/auth/**", "/api/products/**", "/api/product-category/**", "/api/countries/**", "/api/states/**").permitAll()
-                    .anyRequest().authenticated()
+                .requestMatchers("/api/v1/auth/**").permitAll()  // Auth endpoints (public)
+
+                // Specify GET requests for public API routes
+                .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()  // Only GET for products
+                .requestMatchers(HttpMethod.GET, "/api/product-category/**").permitAll()  // Only GET for product categories
+                .requestMatchers(HttpMethod.GET, "/api/countries/**").permitAll()  // Only GET for countries
+                .requestMatchers(HttpMethod.GET, "/api/states/**").permitAll()  // Only GET for states
+                .requestMatchers(HttpMethod.POST, "/api/states/**").denyAll()  // Only GET for states
+
+                .anyRequest().authenticated()  // All other endpoints require authentication
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -51,7 +65,9 @@ public class SecurityConfig {
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+
+
+        configuration.setAllowedOrigins(List.of(allowedOrigins));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

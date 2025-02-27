@@ -28,13 +28,14 @@ public class JwtTokenUtil {
     }
 
     // Generate JWT token with user details
-    public String generateToken(String username, Long userId, String firstName) {
+    public String generateToken(String username, Long userId, String firstName, String email) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
         return Jwts.builder()
                 .setSubject(username)
                 .claim("id", userId)
                 .claim("firstName", firstName)
+                .claim("email", email)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -69,6 +70,7 @@ public class JwtTokenUtil {
             userDetails.put("username", claims.getSubject());
             userDetails.put("id", claims.get("id"));
             userDetails.put("firstName", claims.get("firstName"));
+            userDetails.put("email", claims.get("email"));
             return userDetails;
         }
         return null;

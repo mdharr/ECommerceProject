@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-//@CrossOrigin("http://localhost:4200")
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     @Autowired
@@ -38,7 +37,11 @@ public class AuthController {
         Customer registeredUser = customerService.register(customer);
 
         // Generate a JWT for the registered user
-        String token = tokenUtil.generateToken(registeredUser.getUsername(), registeredUser.getId(), registeredUser.getFirstName());
+        String token = tokenUtil.generateToken(
+                registeredUser.getUsername(),
+                registeredUser.getId(),
+                registeredUser.getFirstName(),
+                registeredUser.getEmail());
 
         // Return the token as part of the response body
         Map<String, String> responseBody = new HashMap<>();
@@ -57,7 +60,11 @@ public class AuthController {
         if(customer == null || !passwordEncoder.matches(loginRequest.getPassword(), customer.getPassword())) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
-        String token = tokenUtil.generateToken(customer.getUsername(), customer.getId(), customer.getFirstName());
+        String token = tokenUtil.generateToken(
+                customer.getUsername(),
+                customer.getId(),
+                customer.getFirstName(),
+                customer.getEmail());
 
         // Return a JSON object with a "token" property
         Map<String, String> responseBody = new HashMap<>();

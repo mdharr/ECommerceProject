@@ -21,10 +21,12 @@ import { authGuardFn } from './guards/auth.guard';
 import { RegisterComponent } from './components/register/register.component';
 import { MembersPageComponent } from './components/members-page/members-page.component';
 import { noAuthGuardFn } from './guards/no-auth.guard';
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
 
 const routes: Routes = [
 	{path: 'register', component: RegisterComponent, canActivate: [noAuthGuardFn]},
 	{path: 'login', component: LoginComponent, canActivate: [noAuthGuardFn]},
+  {path: 'order-history', component: OrderHistoryComponent, canActivate: [authGuardFn]},
   {path: 'members', component: MembersPageComponent, canActivate: [authGuardFn]},
   {path: 'checkout', component: CheckoutComponent, canActivate: [authGuardFn]},
   {path: 'cart-details', component: CartDetailsComponent},
@@ -50,7 +52,8 @@ const routes: Routes = [
     LoginComponent,
     LoginStatusComponent,
     RegisterComponent,
-    MembersPageComponent
+    MembersPageComponent,
+    OrderHistoryComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
