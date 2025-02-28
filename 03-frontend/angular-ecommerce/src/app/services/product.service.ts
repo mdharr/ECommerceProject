@@ -3,15 +3,19 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Product } from '../models/product';
 import { ProductCategory } from '../models/product-category';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class ProductService {
 
-	private baseUrl = 'http://localhost:8080/api/products';
+	// private baseUrl = 'http://localhost:8080/api/products';
+	private baseUrl: string = environment.luv2shopApiUrl + '/products';
 
-	private categoryUrl = 'http://localhost:8080/api/product-category';
+
+	// private categoryUrl = 'http://localhost:8080/api/product-category';
+	private categoryUrl: string = environment.luv2shopApiUrl + '/product-category';
 
 	constructor(private httpClient: HttpClient) {}
 

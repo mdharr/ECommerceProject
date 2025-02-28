@@ -2,13 +2,17 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { LoggedInUser } from '../models/logged-in-user';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-	private baseUrl: string = 'http://localhost:8080/api/v1/auth';
+	private baseUrl = environment.luv2shopApiUrl + '/v1/auth';
+	// private securedEndpoints = [this.baseUrl];
+
+	// private baseUrl: string = 'http://localhost:8080/api/v1/auth';
 	private tokenKey: string = 'authToken';
 
 	private currentUserSubject = new BehaviorSubject<LoggedInUser | null>(null);
